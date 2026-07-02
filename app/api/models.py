@@ -14,7 +14,17 @@ def register_model(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    existing = db.query(MLModel).filter(
+        MLModel.name == payload.name,
+        MLModel.status == "active"
+    ).all()
+
+    for old in existing:
+        old.status = "deprecated"
+    db.flush()
+
     new_model = MLModel(**payload.dict())
+    new_model.status = "active"
     db.add(new_model)
     db.commit()
     db.refresh(new_model)
