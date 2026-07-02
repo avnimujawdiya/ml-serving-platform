@@ -3,6 +3,7 @@ from app.core.security import get_current_user
 from app.models.user import User
 from app.api.models import router as models_router
 from app.api.predict import router as predict_router
+from app.api.predict_by_name import router as predict_by_name_router
 from app.api.predictions import router as predictions_router
 from app.api.metrics import router as metrics_router
 
@@ -10,6 +11,7 @@ app = FastAPI(title="ML Serving Platform")
 
 app.include_router(models_router)
 app.include_router(predict_router)
+app.include_router(predict_by_name_router)
 app.include_router(predictions_router)
 app.include_router(metrics_router)
 
