@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.core.security import get_current_user
+from app.core.rate_limiter import check_rate_limit
 from app.models.model import MLModel
 from app.models.prediction import Prediction
 from app.models.user import User
@@ -17,6 +18,7 @@ def predict(
     payload: PredictRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    _: None = Depends(check_rate_limit),
 ):
     model_record = db.query(MLModel).filter(MLModel.id == model_id).first()
     if not model_record:

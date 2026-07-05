@@ -22,6 +22,7 @@ from app.db.base import Base
 from app.models.user import User
 from app.models.model import MLModel
 from app.models.prediction import Prediction
+from app.models.rate_limit import RateLimit
 
 target_metadata = Base.metadata
 
