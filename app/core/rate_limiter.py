@@ -8,6 +8,7 @@ from app.models.rate_limit import RateLimit
 RATE_LIMIT = 5
 WINDOW_MINUTES = 1
 
+
 def check_rate_limit(
     x_api_key: str = Header(..., alias="X-API-Key"),
     db: Session = Depends(get_db),
@@ -15,11 +16,14 @@ def check_rate_limit(
     now = datetime.utcnow()
     window_start = now - timedelta(minutes=WINDOW_MINUTES)
 
-    count = db.query(func.sum(RateLimit.request_count))\
+    count = (
+        db.query(func.sum(RateLimit.request_count))
         .filter(
             RateLimit.api_key == x_api_key,
             RateLimit.window_start >= window_start,
-        ).scalar() or 0
+        )
+        .scalar() or 0
+    )
 
     if count >= RATE_LIMIT:
         raise HTTPException(
